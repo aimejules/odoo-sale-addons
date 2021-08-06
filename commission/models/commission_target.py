@@ -134,9 +134,6 @@ class CommissionTarget(models.Model):
             target.show_child_targets = target.basis == "my_team_commissions"
 
     def compute(self):
-        self.check_extended_security_read()
-        self = self.sudo()
-
         for target in self._sorted_by_category_dependency():
             target._update_base_amount()
             target._update_total_amount()
@@ -430,9 +427,3 @@ class CommissionTarget(models.Model):
         return [
             ("employee_id.user_id", "=", self.env.user.id),
         ]
-
-    @api.model
-    def get_read_access_actions(self):
-        res = super().get_read_access_actions()
-        res.append("compute")
-        return res
